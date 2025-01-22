@@ -1,0 +1,17 @@
+name: spatial-extractions
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - flask
+  - flask-cors
+  - flask-wtf
+  - geopandas
+  - shapely
+  - gunicorn
+  - pip
+  - pip:
+      - flask-migrate
+      - flask-sqlalchemy
+      - folium
+      - requests
