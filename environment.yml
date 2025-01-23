@@ -1,6 +1,7 @@
 name: spatial-extractions
 channels:
   - conda-forge
+  - esri
 dependencies:
   - python=3.10
   - flask
@@ -9,11 +10,17 @@ dependencies:
   - flask-migrate
   - flask-sqlalchemy
   - geopandas
+  - pandas
+  - numpy
   - shapely
   - folium
   - gunicorn
   - werkzeug
   - requests
+  - arcgis
+  - rasterio
+  - rasterstats
+  - retrying
   - pip
   - pip:
       - wtforms

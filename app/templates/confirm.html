@@ -15,6 +15,8 @@
     </div>
 
     <form method="POST" action="{{ url_for('main.process_geojson') }}">
+        {{ form.hidden_tag() }}  <!-- 🔹 This fixes the CSRF error -->
+
         <input type="hidden" name="geojson_data" value="{{ gdf }}">
         <button type="submit" class="btn btn-success">Confirm</button>
         <a href="{{ url_for('main.home') }}" class="btn btn-secondary">Go Back</a>
