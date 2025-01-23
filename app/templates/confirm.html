@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm GeoJSON</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h2 class="mb-3">Confirm Uploaded GeoJSON</h2>
+    <p>If the displayed polygon looks correct, click Confirm.</p>
+
+    <div class="mb-3">
+        {{ map_html|safe }}
+    </div>
+
+    <form method="POST" action="{{ url_for('main.process_geojson') }}">
+        <input type="hidden" name="geojson_data" value="{{ gdf }}">
+        <button type="submit" class="btn btn-success">Confirm</button>
+        <a href="{{ url_for('main.home') }}" class="btn btn-secondary">Go Back</a>
+    </form>
+</body>
+</html>

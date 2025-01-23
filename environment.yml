@@ -6,12 +6,15 @@ dependencies:
   - flask
   - flask-cors
   - flask-wtf
+  - flask-migrate
+  - flask-sqlalchemy
   - geopandas
   - shapely
+  - folium
   - gunicorn
+  - werkzeug
+  - requests
   - pip
   - pip:
-      - flask-migrate
-      - flask-sqlalchemy
-      - folium
-      - requests
+      - wtforms
+
