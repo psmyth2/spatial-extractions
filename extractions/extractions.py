@@ -16,7 +16,9 @@ from extractions import reference_layers
 
 class Extractions:
     def __init__(self, gdf: gpd.GeoDataFrame):
-        self.gdf = gdf
+        gdf.set_crs(epsg=4326, inplace=True)
+        gdf["geometry"] = gdf["geometry"].buffer(0)  # Fix self-intersecting polygons
+        self.gdf = gdf[~gdf["geometry"].is_empty & gdf["geometry"].notnull()]
         self.job_id = "001" #make uuids
         self.logger = logging.getLogger(__name__)
         self.reference_layers = reference_layers.reference_layers
@@ -197,69 +199,32 @@ class Extractions:
         self.gdf[layer['name']] = value
         return value
 
-
     def get_image_from_server(self, layer):
-        """Downloads raster from ArcGIS ImageServer and ensures it's correctly written before opening."""
         image_layer = ImageryLayer(layer['url'], self.gis)
-        rendering_rule = {"rasterFunction": layer.get("processing_template")}
-
+        rendering_rule = {"rasterFunction": layer['processing_template']}
         try:
-            # ✅ Define a proper temporary filename
-            temp_dir = tempfile.gettempdir()
-            temp_raster_path = os.path.join(temp_dir, "temp_raster.tif")
-
-            # ✅ Check Spatial Reference
             metadata = image_layer.properties
-            spatial_reference = metadata.get('spatialReference', {})
-            lookup_wkid = self.wkid_lookup(spatial_reference)
-
-            # ✅ Convert project geometry to correct CRS
+            spatial_reference = metadata['spatialReference']
+            lookup_wkid =self.wkid_lookup(spatial_reference)
             project_gdf = self.gdf.to_crs(epsg=lookup_wkid)
+            self.logger.info(project_gdf.head())
             project_gdf['centroid'] = project_gdf['geometry'].centroid
-
-            # ✅ Define Bounding Box
-            if project_gdf.geom_type.isin(['Polygon', 'MultiPolygon']).all():
-                bounding_box = ','.join(map(str, project_gdf.total_bounds))
-            else:
-                bounding_box = self.get_bounding_box_from_lat_lon(
-                    project_gdf['centroid'].iloc[0].y, 
-                    project_gdf['centroid'].iloc[0].x
-                )
-
-            # ✅ Export Image from ArcGIS ImageServer
-            exported_image = image_layer.export_image(
-                bbox=bounding_box,
-                bbox_sr=lookup_wkid,
-                image_sr=lookup_wkid,
-                rendering_rule=rendering_rule,
-                f="image",
-                save_folder=temp_dir,
-                save_file="temp_raster.tif",
-                export_format="tiff"
-            )
-
-            # ✅ Wait to ensure file is fully written
-            time.sleep(1)
-
-            # ✅ Validate File Existence
-            if not os.path.exists(temp_raster_path):
-                raise FileNotFoundError(f"Exported raster file '{temp_raster_path}' does not exist.")
-
-            # ✅ Validate File Size (Ensure it's not empty)
-            if os.path.getsize(temp_raster_path) == 0:
-                raise ValueError(f"Exported raster file '{temp_raster_path}' is empty or corrupted.")
-
-            # ✅ Verify the File Can Be Opened by Rasterio
-            with rasterio.open(temp_raster_path) as src:
-                if src.count == 0:
-                    raise ValueError(f"Raster '{temp_raster_path}' does not contain valid bands.")
-
-            return [temp_raster_path, project_gdf]
-
+            bounding_box = ','.join(map(str, project_gdf.total_bounds)) if project_gdf.geom_type.isin(['Polygon', 'MultiPolygon']).all(
+            ) else self.get_bounding_box_from_lat_lon(project_gdf['centroid'].iloc[0].y, project_gdf['centroid'].iloc[0].x)
+            self.logger.info(f"bounding box is: {bounding_box}")
+            exported_image = image_layer.export_image(bbox=bounding_box, 
+                                                      bbox_sr=lookup_wkid, 
+                                                      image_sr=lookup_wkid, 
+                                                      rendering_rule=rendering_rule,
+                                                      f='image', 
+                                                      save_folder=os.getcwd(),#tempfile.gettempdir(), 
+                                                      save_file='temp_raster.tif', 
+                                                      export_format='tiff')
+            return [exported_image, project_gdf]
         except Exception as e:
-            self.logger.error(f"Error processing layer {layer['name']}: {str(e)}")
+            self.logger.error(
+                "Error processing layer {}: {}".format(layer['name'], str(e)))
             return None
-
 
     def wkid_lookup(self, spatial_reference):
         wkid = spatial_reference['wkid'] if 'wkid' in spatial_reference else spatial_reference['wkt']
