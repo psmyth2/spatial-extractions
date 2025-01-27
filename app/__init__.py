@@ -4,7 +4,13 @@ from flask import Flask
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
 
-log_file_path = "extraction.log"
+# ✅ Ensure logs directory exists
+log_dir = "/app/logs"
+os.makedirs(log_dir, exist_ok=True)
+
+# ✅ Set log file path inside a writable directory
+log_file_path = os.path.join(log_dir, "extraction.log")
+
 
 def create_app():
     app = Flask(__name__)
@@ -12,15 +18,18 @@ def create_app():
     CORS(app)
     CSRFProtect(app)
 
-    # ✅ Configure Logging
+    # ✅ Configure Logging to avoid permission issues
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[
-            logging.FileHandler(log_file_path),  # ✅ Save logs to file
+            # ✅ Save logs to a writable directory
+            logging.FileHandler(log_file_path),
             logging.StreamHandler()  # ✅ Print logs to console
         ]
     )
+
+    app.logger.info("Flask app is starting...")
 
     from app.routes import main
     app.register_blueprint(main)

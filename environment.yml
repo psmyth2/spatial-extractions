@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - esri
 dependencies:
-  - python=3.10
+  - python=3.11
   - flask
   - flask-cors
   - flask-wtf
@@ -12,16 +12,16 @@ dependencies:
   - geopandas
   - pandas
   - numpy
-  - shapely
   - folium
   - gunicorn
   - werkzeug
   - requests
-  - arcgis
   - rasterio
   - rasterstats
   - retrying
+  - arcgis=2.3.1
   - pip
   - pip:
       - wtforms
+
 

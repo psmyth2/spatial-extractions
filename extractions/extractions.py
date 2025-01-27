@@ -14,12 +14,14 @@ import tempfile
 import common
 from extractions import reference_layers
 
+
 class Extractions:
     def __init__(self, gdf: gpd.GeoDataFrame):
         gdf.set_crs(epsg=4326, inplace=True)
-        gdf["geometry"] = gdf["geometry"].buffer(0)  # Fix self-intersecting polygons
+        gdf["geometry"] = gdf["geometry"].buffer(
+            0)  # Fix self-intersecting polygons
         self.gdf = gdf[~gdf["geometry"].is_empty & gdf["geometry"].notnull()]
-        self.job_id = "001" #make uuids
+        self.job_id = "001"  # make uuids
         self.logger = logging.getLogger(__name__)
         self.reference_layers = reference_layers.reference_layers
         self.geom_type = self.gdf.geom_type
@@ -205,20 +207,20 @@ class Extractions:
         try:
             metadata = image_layer.properties
             spatial_reference = metadata['spatialReference']
-            lookup_wkid =self.wkid_lookup(spatial_reference)
+            lookup_wkid = self.wkid_lookup(spatial_reference)
             project_gdf = self.gdf.to_crs(epsg=lookup_wkid)
             self.logger.info(project_gdf.head())
             project_gdf['centroid'] = project_gdf['geometry'].centroid
             bounding_box = ','.join(map(str, project_gdf.total_bounds)) if project_gdf.geom_type.isin(['Polygon', 'MultiPolygon']).all(
             ) else self.get_bounding_box_from_lat_lon(project_gdf['centroid'].iloc[0].y, project_gdf['centroid'].iloc[0].x)
             self.logger.info(f"bounding box is: {bounding_box}")
-            exported_image = image_layer.export_image(bbox=bounding_box, 
-                                                      bbox_sr=lookup_wkid, 
-                                                      image_sr=lookup_wkid, 
+            exported_image = image_layer.export_image(bbox=bounding_box,
+                                                      bbox_sr=lookup_wkid,
+                                                      image_sr=lookup_wkid,
                                                       rendering_rule=rendering_rule,
-                                                      f='image', 
-                                                      save_folder=os.getcwd(),#tempfile.gettempdir(), 
-                                                      save_file='temp_raster.tif', 
+                                                      f='image',
+                                                      save_folder=os.getcwd(),  # tempfile.gettempdir(),
+                                                      save_file='temp_raster.tif',
                                                       export_format='tiff')
             return [exported_image, project_gdf]
         except Exception as e:
