@@ -45,3 +45,23 @@ name_to_full_name = {
     "design_storm_hist": "Historical design storm precipitation event",
     "sea_rise_10ft": "Projected sea level rise"
 }
+
+metric_to_category = {
+    "Aquifer name": "Hydrology & Watershed",
+    "Environmental justice community": "Social & Environmental Factors",
+    "Flood hazard type": "Flood Risk & Water Management",
+    "Social vulnerability index": "Social & Environmental Factors",
+    "HUC 8 name": "Hydrology & Watershed",
+    "HUC 6 name": "Hydrology & Watershed",
+    "County": "Administrative & Geographic Information",
+    "Percent impervious": "Urban Heat & Impervious Cover",
+    "Slope": "Urban Heat & Impervious Cover",
+    "Aspect": "Urban Heat & Impervious Cover",
+    "Lithology type": "Soil & Geology",
+    "Soil type": "Soil & Geology",
+    "Average precipitation": "Flood Risk & Water Management",
+    "Precipitation in 85th percentile storm event (historical)": "Flood Risk & Water Management",
+    "Precipitation in 85th percentile storm event (2050)": "Flood Risk & Water Management",
+    "Historical design storm precipitation event": "Flood Risk & Water Management",
+    "Projected sea level rise": "Flood Risk & Water Management"
+}
