@@ -30,7 +30,7 @@ name_to_full_name = {
     "aquifer_name": "Aquifer name",
     "ej_com": "Environmental justice community",
     "flood": "Flood hazard type",
-    "svi": "Social vulnerability index",
+    # "svi": "Social vulnerability index",
     "huc8_name": "HUC 8 name",
     "huc6_name": "HUC 6 name",
     "county": "County",

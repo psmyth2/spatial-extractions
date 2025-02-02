@@ -23,14 +23,14 @@ reference_layers = [
         "field": "esri_symbology",
         "query": '1=1'
     },
-    {
-        "name": "svi",
-        "full_name": "Social vulnerability index",
-        "url": "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/ArcGIS/rest/services/CDC_Social_Vulnerability_Index_2018/FeatureServer/2",
-        "extraction_method": "spatial_join_majority",
-        "field": "RPL_THEMES",
-        "query": '1=1'
-    },
+    # {
+    #     "name": "svi",
+    #     "full_name": "Social vulnerability index",
+    #     "url": "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/ArcGIS/rest/services/CDC_Social_Vulnerability_Index_2018/FeatureServer/2",
+    #     "extraction_method": "spatial_join_majority",
+    #     "field": "RPL_THEMES",
+    #     "query": '1=1'
+    # },
     {
         "name": "huc8_name",
         "full_name": "HUC 8 name",
@@ -52,7 +52,7 @@ reference_layers = [
         "extraction_method": "attribute_join",
         "field": "NAME"
     },
-    # @TODO: Add landcover layer back once we have a dissolved version
+    # @TODO: Add landcover layer back
     # {
     #     "name": "landuse",
     #     "url": "https://2nformspatial.com/server/rest/services/telr_landuse/MapServer/0",
