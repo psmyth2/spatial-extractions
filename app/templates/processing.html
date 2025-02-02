@@ -18,33 +18,36 @@
     </div>
 
     <script>
-        // Connect to the /logs endpoint to stream logs
         const logOutput = document.getElementById("log-output");
         const eventSource = new EventSource("/logs");
-
+    
         eventSource.onmessage = function(event) {
-            logOutput.innerHTML += event.data + "\n";
-            logOutput.scrollTop = logOutput.scrollHeight; // Auto-scroll
+            if (event.data.trim() !== "") {  // ✅ Avoid blank lines
+                logOutput.innerHTML += event.data + "\n";
+                logOutput.scrollTop = logOutput.scrollHeight;  // Auto-scroll to the latest log
+            }
         };
-
-        eventSource.onerror = function() {
-            console.error("Log stream closed.");
-            eventSource.close();
+    
+        eventSource.onerror = function(event) {
+            console.error("Log stream encountered an error:", event);
+            eventSource.close();  // Gracefully close the connection
         };
-
-        // Polling to check extraction completion
+    
+        // ✅ Polling to check if the extraction process is complete
         function checkStatus() {
             fetch(`/check-status/{{ session_id }}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.done) {
+                        eventSource.close();  // ✅ Stop log streaming when done
                         window.location.href = "/summary/{{ session_id }}";
                     }
                 })
                 .catch(error => console.error("Error checking status:", error));
         }
-
+    
         setInterval(checkStatus, 3000); // Check every 3 seconds
     </script>
+    
 </body>
 </html>

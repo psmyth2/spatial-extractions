@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from flask import Flask
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
@@ -25,7 +26,7 @@ def create_app():
         handlers=[
             # ✅ Save logs to a writable directory
             logging.FileHandler(log_file_path),
-            logging.StreamHandler()  # ✅ Print logs to console
+            logging.StreamHandler(sys.stdout)   # ✅ Print logs to console
         ]
     )
 

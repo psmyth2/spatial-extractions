@@ -22,8 +22,11 @@ if not os.path.exists(UPLOAD_FOLDER):
 extraction_results = {}
 
 # Helper function to check file extension
+
+
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @main.route("/", methods=["GET", "POST"])
 def home():
@@ -50,17 +53,20 @@ def home():
 
                 # Generate map with Leaflet
                 centroid = gdf.geometry.centroid.iloc[0]
-                map_object = folium.Map(location=[centroid.y, centroid.x], zoom_start=14)
-                folium.GeoJson(gdf.to_json(), name="Uploaded Polygon").add_to(map_object)
+                map_object = folium.Map(
+                    location=[centroid.y, centroid.x], zoom_start=14)
+                folium.GeoJson(
+                    gdf.to_json(), name="Uploaded Polygon").add_to(map_object)
 
                 map_html = map_object._repr_html_()
 
-                return render_template("confirm.html", form=form, map_html=map_html, gdf=gdf.to_json())  # ✅ Pass form to template
+                # ✅ Pass form to template
+                return render_template("confirm.html", form=form, map_html=map_html, gdf=gdf.to_json())
 
             except Exception as e:
                 flash(f"Error processing GeoJSON: {str(e)}", "danger")
                 return redirect(url_for("main.home"))
-    
+
     return render_template("upload.html", form=form)
 
 
@@ -79,7 +85,8 @@ def perform_extraction(geojson_data, session_id):
 
         extraction_results[session_id] = extracted_attributes  # Store result
     except Exception as e:
-        extraction_results[session_id] = {"error": f"Extraction failed: {str(e)}"}
+        extraction_results[session_id] = {
+            "error": f"Extraction failed: {str(e)}"}
 
 
 @main.route("/process", methods=["POST"])
@@ -94,7 +101,8 @@ def process_geojson():
     session_id = str(int(time.time()))  # Unique ID for session tracking
 
     # Run extraction in a separate thread
-    thread = threading.Thread(target=perform_extraction, args=(geojson_data, session_id))
+    thread = threading.Thread(
+        target=perform_extraction, args=(geojson_data, session_id))
     thread.start()
 
     return redirect(url_for("main.processing", session_id=session_id))
@@ -109,7 +117,7 @@ def processing(session_id):
 @main.route("/logs")
 def stream_logs():
     """Ensures the log file exists before streaming logs in real-time."""
-    
+
     log_file_path = "extraction.log"
 
     # ✅ Ensure the log file exists
@@ -126,7 +134,14 @@ def stream_logs():
                     yield f"data: {line}\n\n"
                 time.sleep(0.5)  # Prevents CPU overuse
 
-    return Response(stream_with_context(generate()), content_type="text/event-stream")
+    return Response(
+        stream_with_context(generate()),
+        content_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 
 @main.route("/check-status/<session_id>")
@@ -144,7 +159,6 @@ def summary(session_id):
 
     filepath = os.path.join(UPLOAD_FOLDER, 'test.geojson')
 
-
     with open(filepath) as f:
         geojson_data = json.load(f)
 
@@ -158,6 +172,4 @@ def summary(session_id):
 
     map_html = map_object._repr_html_()
 
-    
     return render_template("summary.html", extracted_attributes=extracted_attributes, map_html=map_html)
-
