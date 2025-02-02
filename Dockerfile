@@ -1,35 +1,40 @@
-# Use the official Mamba image for Python 3.11
+# Use the official Mamba image
 FROM mambaorg/micromamba:1.4.2
 
 # Set working directory
 WORKDIR /app
 
-# Copy the environment.yml file first (this allows better caching)
+# Switch to root to manage permissions
+USER root
+
+# Copy environment file
 COPY environment.yml /tmp/environment.yml
 
-# Create the Conda environment using Mamba
+# Create Conda environment
 RUN micromamba create -y -n spatial-extractions -f /tmp/environment.yml && \
     micromamba clean --all --yes
 
-# Ensure the Conda environment is activated in future commands
+# ✅ Fix permissions: Create logs/uploads with full access
+RUN mkdir -p /app/logs /app/uploads && \
+    chown -R mambauser:mambauser /app && \
+    chmod -R 775 /app/logs /app/uploads
+
+# Switch back to the default user (mambauser)
+USER mambauser
+
+# Ensure the environment is activated
 SHELL ["micromamba", "run", "-n", "spatial-extractions", "/bin/bash", "-c"]
 
 # Copy the rest of the app files
 COPY . .
 
-# ✅ Create writable directories inside the container
-RUN mkdir -p /app/logs && chmod -R 777 /app/logs
-RUN mkdir -p /app/uploads && chmod -R 777 /app/uploads
-
-# Expose Flask port
 EXPOSE 5000
 
-# Set Flask environment variables
+# Environment variables
 ENV FLASK_APP=main.py
 ENV FLASK_ENV=development
+ENV PYTHONUNBUFFERED=1
 
-# Use ENTRYPOINT to ensure Conda is activated properly
+# Run the app
 ENTRYPOINT ["micromamba", "run", "-n", "spatial-extractions"]
-
-# Start Flask in debug mode
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000", "--debug"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000", "--debug", "--reload"]
