@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from app.forms import GeoJSONUploadForm
 from extractions.extractions import Extractions
 from extractions.extraction_cleaning import ExtractionCleaning
+from openai_summary.summarize import Summarize
 
 main = Blueprint("main", __name__)
 
@@ -82,6 +83,8 @@ def perform_extraction(geojson_data, session_id):
 
         cleaners = ExtractionCleaning(spatial_attributes_df)
         extracted_attributes = cleaners.clean_data()
+        # summarizer = Summarize(extracted_attributes)
+        # summary = summarizer.get_response()
 
         extraction_results[session_id] = extracted_attributes  # Store result
     except Exception as e:
