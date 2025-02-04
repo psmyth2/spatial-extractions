@@ -38,13 +38,13 @@ reference_layers = [
         "extraction_method": "spatial_join_majority",
         "field": "name"
     },
-    {
-        "name": "huc6_name",
-        "full_name": "HUC 6 name",
-        "url": "https://hydrowfs.nationalmap.gov/arcgis/rest/services/wbd/MapServer/3",
-        "extraction_method": "spatial_join_majority",
-        "field": "name"
-    },
+    # {
+    #     "name": "huc6_name",
+    #     "full_name": "HUC 6 name",
+    #     "url": "https://hydrowfs.nationalmap.gov/arcgis/rest/services/wbd/MapServer/3",
+    #     "extraction_method": "spatial_join_majority",
+    #     "field": "name"
+    # },
     {
         "name": "county",
         "full_name": "County",

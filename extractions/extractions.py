@@ -189,7 +189,6 @@ class Extractions:
             return self.gdf
         image = image_info[0]
         project_gdf = image_info[1]
-        project_gdf['centroid'] = project_gdf['geometry'].centroid
         point_coords = project_gdf['centroid'].iloc[0].coords[0]
 
         with rasterio.open(image) as src:
@@ -208,7 +207,6 @@ class Extractions:
             spatial_reference = metadata['spatialReference']
             lookup_wkid = self.wkid_lookup(spatial_reference)
             project_gdf = self.gdf.to_crs(epsg=lookup_wkid)
-            self.logger.info(project_gdf.head())
             project_gdf['centroid'] = project_gdf['geometry'].centroid
             bounding_box = ','.join(map(str, project_gdf.total_bounds)) if project_gdf.geom_type.isin(['Polygon', 'MultiPolygon']).all(
             ) else self.get_bounding_box_from_lat_lon(project_gdf['centroid'].iloc[0].y, project_gdf['centroid'].iloc[0].x)

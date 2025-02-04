@@ -32,7 +32,7 @@ name_to_full_name = {
     "flood": "Flood hazard type",
     # "svi": "Social vulnerability index",
     "huc8_name": "HUC 8 name",
-    "huc6_name": "HUC 6 name",
+    # "huc6_name": "HUC 6 name",
     "county": "County",
     "imp_mean": "Percent impervious",
     "slope": "Slope",
