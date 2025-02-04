@@ -118,7 +118,8 @@ def processing(session_id):
 def stream_logs():
     """Ensures the log file exists before streaming logs in real-time."""
 
-    log_file_path = "extraction.log"
+    log_dir = "/app/logs"
+    log_file_path = os.path.join(log_dir, "extraction.log")
 
     # ✅ Ensure the log file exists
     if not os.path.exists(log_file_path):
