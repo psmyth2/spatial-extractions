@@ -23,9 +23,13 @@
             <h5>Extracted Attributes</h5>
             <div class="card">
                 <div class="card-body">
-                    {% for layer, attributes in extracted_attributes.items() %}
-                        <h6 class="card-title">{{ layer }}</h6>
-                        <p>{{ attributes }}</p>  <!-- Ensures values are properly displayed -->
+                    {% for category, attributes in extracted_attributes.items() %}
+                        <h6 class="card-title">{{ category }}</h6>
+                        <ul class="list-group list-group-flush">
+                            {% for metric, value in attributes.items() %}
+                                <li class="list-group-item"><strong>{{ metric }}:</strong> {{ value }}</li>
+                            {% endfor %}
+                        </ul>
                     {% endfor %}
                 </div>
             </div>

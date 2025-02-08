@@ -71,11 +71,41 @@ class ExtractionCleaning:
         return f"{directions[idx]} facing"
 
     def format_df_to_dict(self, df: pd.DataFrame) -> dict:
-        df = self.map_name_to_full_name(df)
+        # df = self.map_name_to_full_name(df)
         logging.info(df.to_dict(orient='records'))
         payload = df.to_dict(orient='records')
 
         if payload:
             payload[0] = {str(k): v for k, v in payload[0].items()}
+        categorized_data = self.format_extracted_data(payload[0])
+        return categorized_data
 
-        return payload[0]
+    def format_extracted_data(self, extracted_data):
+        structured_data = {
+            "Flood Risk & Water Management": {
+                "Flood Hazard": extracted_data.get("flood"),
+                "Avg Precipitation (inches)": extracted_data.get("avg_ppt"),
+                "Extreme Rainfall Events (Historic)": extracted_data.get("p85_gcm_hist"),
+                "Extreme Rainfall Events (2050 Projection)": extracted_data.get("p85_gcm_2050"),
+            },
+            "Urban Heat & Impervious Cover": {
+                "Impervious Surface (%)": extracted_data.get("imp_mean"),
+                "Slope (%)": extracted_data.get("slope"),
+                "Aspect (Sun Exposure)": extracted_data.get("aspect"),
+            },
+            "Social & Environmental Factors": {
+                "Social Vulnerability Index": extracted_data.get("svi"),
+                "Environmental Justice Community": extracted_data.get("ej_com"),
+                "County": extracted_data.get("county"),
+            },
+            "Soil & Geology": {
+                "Soil Type": extracted_data.get("soil"),
+                "Lithology": extracted_data.get("lithology"),
+            },
+            "Hydrology & Watershed": {
+                "HUC 8 Watershed": extracted_data.get("huc8_name"),
+                "HUC 6 Watershed": extracted_data.get("huc6_name"),
+                "Aquifer Name": extracted_data.get("aquifer_name"),
+            }
+        }
+        return structured_data
