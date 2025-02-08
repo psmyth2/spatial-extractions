@@ -52,13 +52,15 @@ reference_layers = [
         "extraction_method": "attribute_join",
         "field": "NAME"
     },
-    # @TODO: Add landcover layer back
-    # {
-    #     "name": "landuse",
-    #     "url": "https://2nformspatial.com/server/rest/services/telr_landuse/MapServer/0",
-    #     "extraction_method": "spatial_join_majority",
-    #     "field": "lu"
-    # },
+    {
+        "name": "landcover",
+        "url": "https://landscape10.arcgis.com/arcgis/rest/services/USA_NLCD_Land_Cover/ImageServer",
+        "extraction_method": "zonal_stats",
+        "fallback_method": "extract_center_point",
+        "stat": "majority",
+        "query": "Name = 'USA_NLCD_Land_Cover_2021_conus'",
+        "processing_template": "Cartographic Renderer"
+    },
     {
         "name": "imp_mean",
         "full_name": "Percent impervious",

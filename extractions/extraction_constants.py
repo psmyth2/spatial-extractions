@@ -37,6 +37,7 @@ name_to_full_name = {
     "imp_mean": "Percent impervious",
     "slope": "Slope",
     "aspect": "Aspect",
+    "landcover": "Landcover",
     "lithology": "Lithology type",
     "soil": "Soil type",
     "avg_ppt": "Average precipitation",
@@ -64,4 +65,27 @@ metric_to_category = {
     "Precipitation in 85th percentile storm event (2050)": "Flood Risk & Water Management",
     "Historical design storm precipitation event": "Flood Risk & Water Management",
     "Projected sea level rise": "Flood Risk & Water Management"
+}
+
+nlcd_classes = {
+    11: "Open Water",
+    12: "Perennial Ice/Snow",
+    21: "Developed, Open Space",
+    22: "Developed, Low Intensity",
+    23: "Developed, Medium Intensity",
+    24: "Developed, High Intensity",
+    31: "Barren Land (Rock/Sand/Clay)",
+    41: "Deciduous Forest",
+    42: "Evergreen Forest",
+    43: "Mixed Forest",
+    51: "Dwarf Scrub (Alaska only)",
+    52: "Shrub/Scrub",
+    71: "Grassland/Herbaceous",
+    72: "Sedge/Herbaceous (Alaska only)",
+    73: "Lichens (Alaska only)",
+    74: "Moss (Alaska only)",
+    81: "Pasture/Hay",
+    82: "Cultivated Crops",
+    90: "Woody Wetlands",
+    95: "Emergent Herbaceous Wetlands"
 }
