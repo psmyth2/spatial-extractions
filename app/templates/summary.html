@@ -24,17 +24,35 @@
             <div class="card">
                 <div class="card-body">
                     {% for category, attributes in extracted_attributes.items() %}
-                        <h6 class="card-title"><strong>{{ category }}</strong></h6>
-                        <ul class="list-group list-group-flush">
-                            {% for metric, value in attributes.items() %}
-                                <li class="list-group-item">{{ metric }}: {{ value }}</li>
-                            {% endfor %}
-                        </ul>
+                        {% if category != "summary" %}  <!-- Exclude summary from attributes -->
+                            <h6 class="card-title"><strong>{{ category }}</strong></h6>
+                            <ul class="list-group list-group-flush">
+                                {% for metric, value in attributes.items() %}
+                                    <li class="list-group-item">{{ metric }}: {{ value }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Summary Card Below Map -->
+    {% if extracted_attributes.summary %}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>AI-Generated Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ extracted_attributes.summary }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     <a href="{{ url_for('main.home') }}" class="btn btn-primary mt-3">Upload Another</a>
 </body>

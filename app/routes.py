@@ -83,10 +83,11 @@ def perform_extraction(geojson_data, session_id):
 
         cleaners = ExtractionCleaning(spatial_attributes_df)
         extracted_attributes = cleaners.clean_data()
-        # summarizer = Summarize(extracted_attributes)
-        # summary = summarizer.get_response()
+        summarizer = Summarize(extracted_attributes)
+        summary = summarizer.get_response()
 
-        extraction_results[session_id] = extracted_attributes  # Store result
+        extracted_attributes["summary"] = summary
+        extraction_results[session_id] = extracted_attributes
     except Exception as e:
         extraction_results[session_id] = {
             "error": f"Extraction failed: {str(e)}"}
@@ -160,6 +161,9 @@ def check_status(session_id):
 def summary(session_id):
     """Displays extracted attributes after processing is complete."""
     extracted_attributes = extraction_results.pop(session_id, {})
+
+    # Ensure 'summary' key exists to avoid template errors
+    extracted_attributes.setdefault("summary", "No summary available.")
 
     filepath = os.path.join(UPLOAD_FOLDER, 'test.geojson')
 

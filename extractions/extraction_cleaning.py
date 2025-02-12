@@ -71,13 +71,11 @@ class ExtractionCleaning:
         return f"{directions[idx]} facing"
 
     def format_df_to_dict(self, df: pd.DataFrame) -> dict:
-        # df = self.map_name_to_full_name(df)
-        logging.info(df.to_dict(orient='records'))
         payload = df.to_dict(orient='records')
-
         if payload:
             payload[0] = {str(k): v for k, v in payload[0].items()}
         categorized_data = self.format_extracted_data(payload[0])
+        logging.info(categorized_data)
         return categorized_data
 
     def format_extracted_data(self, extracted_data):
